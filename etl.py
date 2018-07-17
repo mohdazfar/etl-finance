@@ -13,7 +13,7 @@ from credentials import Credentials
 
 logging.basicConfig(format='%(asctime)s %(message)s')
 
-class DataPipeline(object):
+class ETLPipeline(object):
 
     def __init__(self, table_name):
         self.table_name = table_name
@@ -108,10 +108,10 @@ class DataPipeline(object):
         self.load()
 
 
-class StockPipeline(DataPipeline):
+class StockETL(ETLPipeline):
 
     def __init__(self, stocks, interval, stock_market, period):
-        DataPipeline.__init__(self, table_name='stock_ticks')
+        ETLPipeline.__init__(self, table_name='stock_ticks')
         self.stocks = stocks
         self.interval = interval
         self.stock_market = stock_market
@@ -192,7 +192,7 @@ class StockPipeline(DataPipeline):
 
 
 
-class NewsPipeline(DataPipeline):
+class NewsETL(ETLPipeline):
 
     '''
     NEWS_DESK_VALUES = ['Adventure Sports', 'Arts & Leisure', 'Arts', 'Automobiles', 'Blogs', 'Books',
@@ -224,7 +224,7 @@ class NewsPipeline(DataPipeline):
     '''
 
     def __init__(self, api_key, start_year, start_month, end_year, end_month):
-        DataPipeline.__init__(self, table_name='news')
+        ETLPipeline.__init__(self, table_name='news')
         self.api_key = api_key
         self.start_year = start_year
         self.start_month = start_month
@@ -342,10 +342,10 @@ class NewsPipeline(DataPipeline):
 
 
 
-class ForexPipeline(DataPipeline):
+class ForexETL(ETLPipeline):
     
     def __init__(self, start_date, end_date):
-        DataPipeline.__init__(self, table_name='forex')
+        ETLPipeline.__init__(self, table_name='forex')
         self.ROOT_URI_FOREX = 'https://ratesapi.io/api/'
         self.ROOT_URI_BTC = 'https://api.coindesk.com/v1/bpi/historical/close.json'
         self.start_date = start_date
@@ -459,7 +459,7 @@ if __name__ == '__main__':
     period = '2Y'  # Period (Ex: "1Y" = 1 year)
 
     # Stock Data ETL
-    stock_pipeline = StockPipeline(stocks, interval, stock_market, period)
+    stock_pipeline = StockETL(stocks, interval, stock_market, period)
     stock_pipeline.run()
 
     # NYTIMES data parameters
@@ -467,7 +467,7 @@ if __name__ == '__main__':
     until = {'year': 2018, 'month': 1}
     
     # NYTIMES ETL 
-    news_pipeline = NewsPipeline(api_key=Credentials.NTYIMTES_API_KEY,
+    news_pipeline = NewsETL(api_key=Credentials.NTYIMTES_API_KEY,
                             start_year=start['year'],
                             start_month=start['month'],
                             end_year=until['year'],
@@ -481,6 +481,6 @@ if __name__ == '__main__':
     
     
     # FOREX ETL
-    forex_pipeline = ForexPipeline(start_date, end_date)
+    forex_pipeline = ForexETL(start_date, end_date)
     forex_pipeline.run()
     
