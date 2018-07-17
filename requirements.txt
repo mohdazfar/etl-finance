@@ -1,0 +1,6 @@
+googlefinance.client
+numpy
+pandas
+PyMYSQL
+twitter
+tweepy
